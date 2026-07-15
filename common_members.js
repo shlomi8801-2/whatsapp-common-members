@@ -1,5 +1,7 @@
 import { connectToWhatsApp, con } from "./whatsapp.js";
 import { listGroups, input, listMembersOfGroup } from "./utils.js";
+import { sleep } from "@cacheable/utils";
+
 
 export async function showcommonmembers() {
   const groups = await listGroups();
@@ -25,6 +27,7 @@ export async function showcommonmembers() {
     await curr.forEach((userPhoneNumber) => {
       output[userPhoneNumber].push(groups[groupidx].name);
     });
+    await sleep(5000); //for the rate limit
   };
   const users = Object.keys(output);
   for(var i=0;i<users.length;i++){

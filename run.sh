@@ -1,0 +1,1 @@
+(echo 245 | node . ) >> output.txt
