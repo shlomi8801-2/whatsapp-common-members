@@ -21,9 +21,12 @@ export async function input(question = ""){
   input: process.stdin,
   output: process.stdout,
     });
-    rl.question(question, str => {
-    const output = str;
-    rl.close();
-    });
-return str;
+    console.log(question);
+    for await (const line of rl) {
+        rl.close();
+        return line;
+    }
+}
+export async function listMembersOfGroup(jid){
+    return (await con.sock.groupMetadata(jid)).participants;
 }
