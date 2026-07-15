@@ -2,6 +2,7 @@ import { makeWASocket, useMultiFileAuthState, DisconnectReason } from "baileys";
 import QRCode from "qrcode";
 import P from "pino";
 import { sleep } from "@cacheable/utils";
+import {rmdirSync} from "fs"
 
 class conObj {
     state = 2; // 'open' 0 | 'connecting' 1 | 'close' 2
@@ -13,7 +14,8 @@ export async function connectToWhatsApp(tries = 5) {
     if(tries<=0){
         return null
     }
-  const { state, saveCreds } = await useMultiFileAuthState("auth"); // auth is the name of the folder locally
+const authFolder = "auth"// auth is the name of the folder locally
+  const { state, saveCreds } = await useMultiFileAuthState(authFolder); 
   const logger = P({ level: 'error' }) // "fatal" | "error" | "warn" | "info" | "debug" | "trace";
   const sock = makeWASocket({
     auth: state,
@@ -25,16 +27,20 @@ export async function connectToWhatsApp(tries = 5) {
 
   sock.ev.on("creds.update", saveCreds); // save the login data with saveCreds function
   
+//   sock.ev.on("connection.update", async (update) => {
+//     const { connection, lastDisconnect, qr } = update;
+//     if (qr) {
+//       console.log(await QRCode.toString(qr, { type: "terminal", small: true }));
+//     }
+//   });
+
   sock.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect, qr } = update;
-    if (qr) {
-      console.log(await QRCode.toString(qr, { type: "terminal", small: true }));
+    
+    if(qr){
+        console.log(await QRCode.toString(qr, { type: "terminal", small: true }));
     }
-  });
-
-  sock.ev.on("connection.update", (update) => {
-    const { connection, lastDisconnect } = update;
-
+        
     if (connection === "close") {
       const shouldReconnect =
         lastDisconnect?.error?.output?.statusCode !==
@@ -48,7 +54,11 @@ export async function connectToWhatsApp(tries = 5) {
 
       // Reconnect if not logged out
       if (shouldReconnect) {
-        return connectToWhatsApp(tries-1);
+        return connectToWhatsApp(tries-1); // fixable by reconnecting
+      }else{
+            //delete the auth folder cuz we need to connect again
+            await rmdirSync(authFolder,{ recursive: true });
+            return connectToWhatsApp(tries-1);
       }
     } else if (connection === "open") {
       console.log("opened connection");
