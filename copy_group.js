@@ -29,9 +29,10 @@ export async function copyGroup() {
     {
       // members.push(element.phoneNumber);
       await addMembers(groups[dst].id,[element.phoneNumber]);
-      await sleep(5000);
+      await sleep(10000);
     }
 };
+
 // console.log(members)
   console.log(groups[dst].id);
   // await addMembers(groups[dst].id,members)
