@@ -16,7 +16,7 @@ export async function connectToWhatsApp(tries = 5) {
     }
 const authFolder = "auth"// auth is the name of the folder locally
   const { state, saveCreds } = await useMultiFileAuthState(authFolder); 
-  const logger = P({ level: 'error' }) // "fatal" | "error" | "warn" | "info" | "debug" | "trace";
+  const logger = P({ level: 'fatal' }) // "fatal" | "error" | "warn" | "info" | "debug" | "trace";
   const sock = makeWASocket({
     auth: state,
     browser: ["Firefox (Linux)", "", ""],

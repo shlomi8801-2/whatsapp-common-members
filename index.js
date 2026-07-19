@@ -4,6 +4,7 @@ import P from "pino";
 import { sleep } from "@cacheable/utils";
 import {connectToWhatsApp, con} from "./whatsapp.js"
 import {showcommonmembers} from "./common_members.js"
+import {copyGroup} from "./copy_group.js"
 
 function buildjid(phoneNumber, countryCode = "972", isDm = true) {
   return `${countryCode}${phoneNumber}@${isDm ? "s.whatsapp.net" : "g.us"}`;
@@ -21,6 +22,6 @@ function buildjid(phoneNumber, countryCode = "972", isDm = true) {
     //after connection succeeded
     // for (let x=5;x>0;x--)
     // sock.sendMessage(buildjid("500000000"),{"text":"yes"});
-    showcommonmembers();
+    copyGroup();
 })();
 

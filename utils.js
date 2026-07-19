@@ -30,3 +30,6 @@ export async function input(question = ""){
 export async function listMembersOfGroup(jid){
     return (await con.sock.groupMetadata(jid)).participants;
 }
+export async function addMembers(jidGroup,jidList){
+    await con.sock.groupParticipantsUpdate(jidGroup,jidList,'add');
+}
